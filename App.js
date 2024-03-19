@@ -119,12 +119,12 @@
 
 import { View, Text } from 'react-native'
 import React from 'react'
-
+import Masternavigator from './Components/Navigations/Masternavigator'
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
+   <>
+     <Masternavigator/>
+   </>
   )
 }
 

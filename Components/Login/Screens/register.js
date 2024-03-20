@@ -3,6 +3,8 @@ import { View, Text, TextInput, Pressable, StyleSheet, Alert } from 'react-nativ
 import { useNavigation } from '@react-navigation/native';
 import { responsiveHeight, responsiveScreenHeight, responsiveWidth } from '../../../responsive/dimensions';
 import LottieView from 'lottie-react-native';
+import axios from 'axios';
+import User from '../../../Backend/Api/Models/user';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -12,14 +14,49 @@ const Register = () => {
   const navigation = useNavigation();
 
   const handleRegister = () => {
+
     if (!validateEmail(email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-    // You can add further validation for other fields here
-    // If validation passes, you can proceed with registration
-    // For now, let's just show an alert
-    Alert.alert('Registration Successful', 'You are now registered!');
+    
+    const user = {
+      name: name,
+      email: email,
+      password: password,
+      image: occupation,
+    };
+
+    const newUser = new User({ name, email, password, occupation });
+
+    // console.log(newUser,"kkkkkkkkkkkkk");
+
+
+    axios
+    .post("http://localhost:8000/register", user)
+    .then((response) => {
+      console.log(response);
+      Alert.alert(
+        "Registration successful",
+        "You have been registered Successfully"
+      );
+      setName("");
+      setEmail("");
+      setPassword("");
+      setOccupation("");
+    })
+    .catch((error) => {
+      Alert.alert(
+        "Registration Error",
+        "An error occurred while registering"
+      );
+      console.log("registration failed");
+      console.trace(error)
+    });
+
+
+
+   // Alert.alert('Registration Successful', 'You are now registered!');
   };
 
   const validateEmail = (email) => {

@@ -5,6 +5,7 @@ import { responsiveHeight, responsiveScreenHeight, responsiveWidth } from '../..
 import LottieView from 'lottie-react-native';
 import axios from 'axios';
 import User from '../../../Backend/Api/Models/user';
+import { Registration } from '../Apicalls/LoginRequests';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -13,50 +14,26 @@ const Register = () => {
   const [occupation, setOccupation] = useState('');
   const navigation = useNavigation();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
 
     if (!validateEmail(email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
     
-    const user = {
-      name: name,
-      email: email,
-      password: password,
-      image: occupation,
-    };
-
-    const newUser = new User({ name, email, password, occupation });
-
-    // console.log(newUser,"kkkkkkkkkkkkk");
-
-
-    axios
-    .post("http://localhost:8000/register", user)
-    .then((response) => {
-      console.log(response);
-      Alert.alert(
-        "Registration successful",
-        "You have been registered Successfully"
-      );
-      setName("");
-      setEmail("");
-      setPassword("");
-      setOccupation("");
-    })
-    .catch((error) => {
-      Alert.alert(
-        "Registration Error",
-        "An error occurred while registering"
-      );
-      console.log("registration failed");
-      console.trace(error)
-    });
-
-
-
-   // Alert.alert('Registration Successful', 'You are now registered!');
+    const user = { name: name, email: email, password: password, image: occupation};
+     const res = await  Registration(user);
+     console.log(res);
+     if(res.status == "200" || res.status == 200){
+           navigation.navigate("HomeNavigator",{ screen: 'Test'})
+           setEmail("");
+           setName("");
+           setPassword("");
+           setOccupation("");
+     }else{
+           console.log("error occured in If");
+     }
+    
   };
 
   const validateEmail = (email) => {

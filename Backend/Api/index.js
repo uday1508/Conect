@@ -5,7 +5,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 const app = express();
-const port = 3000;
+const port = 8000;
 const cors = require("cors");
 app.use(cors());
 
@@ -24,7 +24,7 @@ mongoose
     console.log("Error connecting to MongoDb", err);
   });
 
-app.listen(port, () => {
+app.listen(port,"192.168.93.73",() => {
   console.log("Server running on port 8000");
 });
 
@@ -35,7 +35,6 @@ const User = require('./Models/user');
 app.post("/register", (req, res) => {
   const { name, email, password, image } = req.body;
   const newUser = new User({ name, email, password, image });
-
   newUser
     .save()
     .then(() => {

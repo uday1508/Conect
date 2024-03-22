@@ -1,17 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Dimensions, Alert } from 'react-native';
 import { responsiveScreenHeight, responsiveWidth,responsiveHeight } from '../../../responsive/dimensions.tsx';
 import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { login } from '../Apicalls/LoginRequests.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+  useEffect(() => {
 
-  const handleLogin = () => {
-    if (!validateEmail(email)) {
+
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          navigation.replace("HomeNavigator",{ screen: 'Home'});
+        } else {
+          console.log("token Not Found");
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+
+  const handleLogin = async () => {
+    if (!validateEmail(email) && password!="") {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      return;
+    }else{
+         const res = await login(email,password);
+         if(res.status == 200 || res.status == "200"){
+          const token = res.data.token;
+          AsyncStorage.setItem("authToken", token);
+          navigation.replace("HomeNavigator",{ screen: 'Home'});
+         }
     }
   };
 const validateEmail = (email) => {
@@ -21,6 +51,15 @@ const validateEmail = (email) => {
 
   return (
     <View style={styles.container}>
+      {loading?(
+
+<View style={{justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+<Text style={{position:'relative',top:responsiveHeight(70), backgroundColor: 'rgba(0, 128, 0, 0.6)',borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, color: 'white',}}>Loading Conet</Text>
+<LottieView source={require('../../../lottie/loading.json')} autoPlay style={{height:responsiveHeight(100),width:responsiveWidth(90),left:responsiveWidth(5)}}/>
+
+</View>
+      ):(
+        <>
       <View style={[styles.rotate, { position: 'absolute', top: responsiveScreenHeight(-7),left:responsiveWidth(-10)}]}> 
       </View>
       <View style={[styles.rrotate, { position: 'absolute', top: responsiveHeight(7),backgroundColor:"orange",transform:[{ rotate: '0deg' }]}]}>
@@ -45,8 +84,10 @@ const validateEmail = (email) => {
       <LottieView source={require('../../../lottie/bubble.json')} autoPlay loop style={{position:'absolute',right:responsiveWidth(-18),top:responsiveHeight(-4),width:responsiveWidth(40),height:responsiveHeight(10)}} />
       <LottieView source={require('../../../lottie/bubble.json')} autoPlay loop style={{position:'absolute',right:responsiveWidth(-2),top:responsiveHeight(92),width:responsiveWidth(10),height:responsiveHeight(15)}} />
       <LottieView source={require('../../../lottie/bubble.json')} autoPlay loop style={{position:'absolute',right:responsiveWidth(85),top:responsiveHeight(92),width:responsiveWidth(20),height:responsiveHeight(5)}} />
-
+</>
+)}
     </View>
+    
   );
 };
 

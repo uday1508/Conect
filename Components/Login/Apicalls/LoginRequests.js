@@ -15,3 +15,22 @@ export  async function Registration(user){
         throw error; // Rethrow the error if needed
     }
 }
+
+export async function login(email,password){
+    const user = {
+        email: email,
+        password: password,
+      };
+    try {
+        const response = await axios.post("http://192.168.93.73:8000/login", user);
+        Alert.alert("Logged In successful", "You have been  Successfully Logged In");
+        return response;
+    } catch (error) {
+        Alert.alert(
+            "Login Error",
+            "An error occurred while Logging In"
+        );
+        console.log("Logging In failed", error, error.message);
+        throw error; 
+    }
+}

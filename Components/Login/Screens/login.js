@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Dimensions, Alert } from 'react-native';
-import { responsiveScreenHeight, responsiveWidth,responsiveHeight } from '../../../responsive/dimensions.tsx';
+import { responsiveScreenHeight, responsiveWidth,responsiveHeight, responsiveFontSize } from '../../../responsive/dimensions.tsx';
 import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { login } from '../Apicalls/LoginRequests.js';
@@ -52,12 +52,21 @@ const validateEmail = (email) => {
   return (
     <View style={styles.container}>
       {loading?(
-
-<View style={{justifyContent:'center',alignContent:'center',alignItems:'center'}}>
-<Text style={{position:'relative',top:responsiveHeight(70), backgroundColor: 'rgba(0, 128, 0, 0.6)',borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, color: 'white',}}>Loading Conet</Text>
-<LottieView source={require('../../../lottie/loading.json')} autoPlay style={{height:responsiveHeight(100),width:responsiveWidth(90),left:responsiveWidth(5)}}/>
-
-</View>
+        <View style={styles.container}>
+        <Text style={styles.text}>
+        <Text style={{ color: 'green',fontSize:responsiveFontSize(10) }}>C</Text>
+        <Text style={{ color: 'orange',fontSize:responsiveFontSize(10)}}>O</Text>
+        <Text style={{ color: 'blue',fontSize:responsiveFontSize(10) }}>N</Text>
+        <Text style={{ color: 'grey' ,fontSize:responsiveFontSize(10)}}>E</Text>
+        <Text style={{ color: 'green',fontSize:responsiveFontSize(10) }}>T</Text>
+      </Text>
+    <View>
+      <View style={[styles.circle, styles.blueCircle]} />
+      <View style={[styles.circle, styles.orangeCircle]} />
+      <View style={[styles.circle, styles.greenCircle]} />
+      <View style={[styles.circle, styles.greyCircle]} />
+      </View>  
+    </View>
       ):(
         <>
       <View style={[styles.rotate, { position: 'absolute', top: responsiveScreenHeight(-7),left:responsiveWidth(-10)}]}> 
@@ -130,6 +139,32 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  circle: {
+    width: responsiveWidth(30),
+    height: responsiveHeight(15),
+    borderRadius: responsiveWidth(15),
+    opacity: 0.6,
+  },
+  blueCircle: {
+    backgroundColor: 'blue',
+    top: responsiveHeight(15),
+    left:responsiveWidth(-20),
+  },
+  orangeCircle: {
+    backgroundColor: 'orange',
+    top: responsiveHeight(0),
+    left: responsiveWidth(25),
+  },
+  greenCircle: {
+    backgroundColor: 'green',
+    top: responsiveHeight(10),
+    left:responsiveWidth(-20),
+  },
+  greyCircle: {
+    backgroundColor: 'grey',
+    top: responsiveHeight(-5),
+    left: responsiveWidth(25),
   },
 });
 

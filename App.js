@@ -119,13 +119,16 @@
 
 import { View, Text } from 'react-native'
 import React from 'react'
+import {Provider} from 'react-redux';
 import Masternavigator from './Components/Navigations/Masternavigator'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import MyStore from './redux/Mystore';
 const App = () => {
+  
   return (
-   <>
+   <Provider store = {MyStore}>
      <Masternavigator/>
-   </>
+   </Provider>
   )
 }
 

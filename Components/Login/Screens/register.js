@@ -1,18 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { responsiveHeight, responsiveScreenHeight, responsiveWidth } from '../../../responsive/dimensions';
 import LottieView from 'lottie-react-native';
 import axios from 'axios';
 import User from '../../../Backend/Api/Models/user';
 import { Registration } from '../Apicalls/LoginRequests';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'react-native-image-picker';
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [image, setImage] = useState(null);
   const [occupation, setOccupation] = useState('');
   const navigation = useNavigation();
+  const [base,setBase] = useState("");
+  const openImageLibrary = () => {
+    setImage(null)
+    ImagePicker.launchImageLibrary({mediaType: 'photo', includeBase64: true}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        //console.log(response.assets[0].base64)
+        setImage(response.assets[0].uri);
+        setBase(response.assets[0].base64)
+      }
+    });
+  };
 
   const handleRegister = async () => {
 
@@ -21,11 +39,11 @@ const Register = () => {
       return;
     }
     
-    const user = { name: name, email: email, password: password, image: occupation};
+    const user = { name: name, email: email, password: password, image:base};
      const res = await  Registration(user);
      console.log(res);
      if(res.status == "200" || res.status == 200){
-           navigation.navigate("HomeNavigator",{ screen: 'Test'})
+      navigation.replace("Login");
            setEmail("");
            setName("");
            setPassword("");
@@ -43,14 +61,22 @@ const Register = () => {
 
   return (
     <View style={styles.container}>
-          <View style={[styles.rotate, { position: 'absolute', top: responsiveScreenHeight(-7),left:responsiveWidth(-10)}]}> 
-      </View>
-      <View style={[styles.rrotate, { position: 'absolute', top: responsiveHeight(7),backgroundColor:"orange",transform:[{ rotate: '0deg' }]}]}>
+          <Pressable onPress={openImageLibrary} style={[styles.rotate, { position: 'absolute', top: responsiveScreenHeight(-7),left:responsiveWidth(-10),justifyContent:'center'}]}> 
+              {image && <Text style={{transform:[{ rotate: '314.2deg'}],position:'absolute',left:responsiveWidth(2),fontSize:28,top:responsiveHeight(10),color:'white'}}>Click to Change PIC</Text>}
+         </Pressable>
+         <Pressable onPress={openImageLibrary} style={{height:responsiveHeight(15),width:responsiveWidth(30),borderRadius:responsiveWidth(15),zIndex:1,justifyContent:'center',alignContent:'center',alignItems:'center',position:'absolute',top:responsiveHeight(15)}}>
+       {!image && <LottieView source={require('../../../lottie/profileimage')} autoPlay loop style={{width:responsiveWidth(40),height:responsiveHeight(20)}}/>}
+        </Pressable>
+      
+
+      <View style={[styles.rrotate, {  elevation: 5,position: 'absolute',top: responsiveHeight(7),backgroundColor:"orange",transform:[{ rotate: '0deg' }]}]}>
+      {image && <Image source={{uri:image}} style={[StyleSheet.absoluteFillObject,styles.rrotate]}/>}
       <View style={styles.formContainer}>
         <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none"/>
         <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} autoCapitalize="words"/>
         <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry/>
-        <TextInput style={styles.input} placeholder="Occupation" value={occupation} onChangeText={setOccupation}/>
+       
+       
         <Pressable style={styles.registerButton} onPress={handleRegister}>
           <Text style={styles.registerButtonText}>Register</Text>
         </Pressable>
@@ -60,7 +86,7 @@ const Register = () => {
       <Pressable style={[styles.rotate, {transform:[{ rotate: '0deg' }],position:'absolute',width:responsiveScreenHeight(50) ,top: responsiveScreenHeight(81),left:responsiveWidth(-10),borderRadius:responsiveWidth(40),backgroundColor:'green'}]} onPress={()=>{console.log('hello')}}>
                   <Text style={{top:responsiveHeight(3),left:responsiveWidth(37),color:'white'}}>Having Account?</Text>
                <Pressable onPress={()=>{navigation.navigate('Login')}}>
-               <Text style={{top:responsiveHeight(0.62),left:responsiveWidth(63),color:'orange'}}>Login</Text>
+               <Text style={{top:responsiveHeight(0.62),left:responsiveWidth(67),color:'orange'}}>Login</Text>
                 </Pressable>  
       </Pressable>
       </View>
@@ -89,7 +115,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius:responsiveWidth(50),
     borderTopRightRadius:responsiveWidth(10),
     borderBottomLeftRadius:responsiveWidth(10),
-    elevation: 5,
   }
   ,
   rotate: {

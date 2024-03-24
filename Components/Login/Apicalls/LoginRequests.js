@@ -1,9 +1,10 @@
 import { Alert } from "react-native";
 import axios from "axios";
+import { url } from "../../../Backend/ip";
 
 export  async function Registration(user){
     try {
-        const response = await axios.post("http://192.168.93.73:8000/register", user);
+        const response = await axios.post(`${url}register`, user);
         Alert.alert("Registration successful", "You have been registered Successfully");
         return response;
     } catch (error) {
@@ -17,12 +18,13 @@ export  async function Registration(user){
 }
 
 export async function login(email,password){
+    console.log(url);
     const user = {
         email: email,
         password: password,
       };
     try {
-        const response = await axios.post("http://192.168.93.73:8000/login", user);
+        const response = await axios.post(`${url}login`, user);
         Alert.alert("Logged In successful", "You have been  Successfully Logged In");
         return response;
     } catch (error) {

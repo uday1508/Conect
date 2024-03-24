@@ -43,8 +43,21 @@ const createUser = async (req, res) => {
     });
 };
 
+const getAllUsers = async (req, res) => {
+  const loggedInUserId = req.params.userId;
 
-  module.exports = {createUser,login};
+  User.find({ _id: { $ne: loggedInUserId } })
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.log("Error retrieving users", err);
+      res.status(500).json({ message: "Error retrieving users" });
+    });
+}
+
+
+module.exports = {createUser,login,getAllUsers};
 
 
   

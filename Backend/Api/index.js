@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const { ipAddress } = require("../ip");
 
 const app = express();
 const port = 8000;
@@ -25,7 +26,7 @@ mongoose
   });
 
 
-app.listen(port,"192.168.93.73",() => {
+app.listen(port,ipAddress,() => {
   console.log("Server running on port 8000");
 });
 
